@@ -1,3 +1,4 @@
+from datetime import date
 from apply_linkedin.utils import parse_meta, parse_date
 
 
