@@ -1,5 +1,5 @@
-from .models import Application
-from .utils import simplejson
+from apply_linkedin.models import Application
+from apply_linkedin.utils import simplejson
 
 
 def parse_application(raw_response):

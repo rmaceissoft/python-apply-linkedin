@@ -1,3 +1,4 @@
+from apply_linkedin.utils import parse_meta, parse_date
 
 
 class ResultSet(list):
