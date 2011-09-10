@@ -163,7 +163,43 @@ class Language(Model):
                 setattr(language, 'name', v.get('name', ''))
             else:
                 setattr(language, k, v)  
-        return language  
+        return language
+    
+    
+class RecommendationType(Model):
+    
+    @classmethod
+    def parse(cls, json):
+        recommendation_type = cls()
+        for k, v in json.items():
+            setattr(recommendation_type, k, v)
+        return recommendation_type    
+
+    
+class Recommender(Model):    
+
+    @classmethod
+    def parse(cls, json):
+        recommender = cls()
+        for k, v in json.items():
+            setattr(recommender, k, v)
+        return recommender   
+             
+    
+class Recommendation(Model):
+    
+    @classmethod
+    def parse(cls, json):
+        recommendation = cls()
+        for k, v in json.items():
+            if k == 'recommendationType':
+                setattr(recommendation, k, RecommendationType.parse(v))
+            elif k == 'recommender':  
+                setattr(recommendation, k, Recommender.parse(v))
+            else:
+                setattr(recommendation, k, v)
+        return recommendation
+                
 
 class Person(Model):
     
@@ -183,6 +219,8 @@ class Person(Model):
                 setattr(person, k, Language.parse_list(v))
             elif k == 'location':
                 setattr(person, k, Location.parse(v))
+            elif k == 'recommendationsReceived':
+                setattr(person, k, Recommendation.parse_list(v))
             else:
                 setattr(person, k, v)
         return person
