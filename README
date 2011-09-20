@@ -14,6 +14,8 @@ Installation
 
 #. Add the 'apply_linkedin.django' to INSTALL_APPS
 
+#. define at settings.py the LINKEDIN_API_SECRET variable 
+
 #. Add the following url route
    url(r'^apply_linkedin/', include('apply_linkedin.django.urls')),
    

@@ -3,9 +3,11 @@ from django.http import HttpResponse, Http404
 
 from apply_linkedin.parser import parse_application
 from apply_linkedin.django.signals import new_apply_with_linkedin
+from apply_linkedin.django.decorators import verify_signature
 
 
 @csrf_exempt
+@verify_signature
 def process_application(request):
     """
     when you implement apply with linkedin and choose 
