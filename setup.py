@@ -8,7 +8,7 @@ setup(
     author_email='rmaceissoft@gmail.com',
     url='https://github.com/rmaceissoft/python-apply-linkedin',
     packages=find_packages(exclude=['ez_setup', 'examples', 'tests', 'docs']),
-    classifiers=['Development Status :: Development',
+    classifiers=["Environment :: Web Environment",
                  'Intended Audience :: Developers',
                  'Operating System :: OS Independent',
                  'Programming Language :: Python',
