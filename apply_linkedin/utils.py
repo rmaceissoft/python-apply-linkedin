@@ -2,8 +2,10 @@ from datetime import date
 
 
 def parse_meta(meta):
-    list_meta = meta.split(',')
     dict_meta = {}
+    if meta == 'Apply with LinkedIn':
+        return dict_meta
+    list_meta = meta.split(',')
     for item in list_meta:
         key, value = item.split(':')
         dict_meta[key] = value
