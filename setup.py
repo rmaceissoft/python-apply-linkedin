@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='python-apply-linkedin',
-    version='0.1',
+    version='0.1.1',
     description='library that made easy implement Apply with Linkedin functionality',
     author='Reiner Marquez',
     author_email='rmaceissoft@gmail.com',
