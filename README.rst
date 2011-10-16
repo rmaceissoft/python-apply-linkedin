@@ -76,3 +76,13 @@ Fragment of template page.html::
          data-jobId="{{ vacancy.id }}"
          data-url="http://{{ current_site.domain }}{% url apply_linkedin.process_application %}">
      </script>
+
+     
+Issues
+======
+
+Please use the `Github issue tracker`_ for any bug reports or feature
+requests.
+
+.. _`Github issue tracker`: https://github.com/rmaceissoft/python-apply-linkedin/issues
+     
