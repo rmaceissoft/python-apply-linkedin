@@ -50,8 +50,8 @@ class Company(Model):
 class Job(Model):
     
     extra_parsers = {
-        'company' : lambda v : Company.parse(v),
-        'position' : lambda v : Position.parse(v)
+        'company' : Company.parse,
+        'position' : Position.parse
     }
     
     
@@ -84,9 +84,9 @@ class PositionResultSet(ResultSet):
 class Position(Model):
 
     extra_parsers = {
-        'company' : lambda v : Company.parse(v),
-        'startDate' : lambda v : parse_date(v),
-        'endDate' : lambda v : parse_date(v),
+        'company' : Company.parse,
+        'startDate' : parse_date,
+        'endDate' : parse_date,
     }
         
     @classmethod
@@ -101,8 +101,8 @@ class Position(Model):
 class Education(Model):
     
     extra_parsers = {
-        'startDate' : lambda v : parse_date(v),
-        'endDate' : lambda v : parse_date(v),
+        'startDate' : parse_date,
+        'endDate' : parse_date,
     }
     
 
@@ -135,27 +135,27 @@ class Recommender(Model):
 class Recommendation(Model):
     
     extra_parsers = {
-        'recommendationType' : lambda v : RecommendationType.parse(v),
-        'recommender' : lambda v : Recommender.parse(v),
+        'recommendationType' : RecommendationType.parse,
+        'recommender' : Recommender.parse,
     }
 
 class Person(Model):
     
     extra_parsers = {
-        'positions' : lambda v : Position.parse_list(v),
-        'educations' : lambda v : Education.parse_list(v),
-        'skills' : lambda v : Skill.parse_list(v),
-        'phoneNumbers' : lambda v : PhoneNumber.parse_list(v),
-        'languages' : lambda v : Language.parse_list(v),
-        'location' : lambda v : Location.parse(v),
-        'recommendationsReceived' : lambda v : Recommendation.parse_list(v),
+        'positions' : Position.parse_list,
+        'educations' : Education.parse_list,
+        'skills' : Skill.parse_list,
+        'phoneNumbers' : PhoneNumber.parse_list,
+        'languages' : Language.parse_list,
+        'location' : Location.parse,
+        'recommendationsReceived' : Recommendation.parse_list,
     }
 
     
 class Application(Model):
     
     extra_parsers = {
-        'meta' : lambda v : parse_meta(v),
-        'job' : lambda v : Job.parse(v),
-        'person' : lambda v : Person.parse(v)
+        'meta' : parse_meta,
+        'job' : Job.parse,
+        'person' : Person.parse
     }
