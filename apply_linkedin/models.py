@@ -21,11 +21,12 @@ class Model(object):
         """Parse a JSON object into a model instance."""
         instance = cls()
         for k, v in json.items():
-            if hasattr(cls, 'extra_values') and k in cls.extra_values:
+            if hasattr(cls, 'extra_parsers') and k in cls.extra_parsers:
                 func = cls.extra_parsers[k]
                 setattr(instance, k, func(v))
             else:
                 setattr(instance, k, v)
+        return instance
     
     @classmethod
     def parse_list(cls, json):
@@ -47,14 +48,6 @@ class Company(Model):
     pass
     
         
-class Job(Model):
-    
-    extra_parsers = {
-        'company' : Company.parse,
-        'position' : Position.parse
-    }
-    
-    
 class PositionResultSet(ResultSet):
     
     _cached_current_position = None
@@ -149,6 +142,14 @@ class Person(Model):
         'languages' : Language.parse_list,
         'location' : Location.parse,
         'recommendationsReceived' : Recommendation.parse_list,
+    }
+
+
+class Job(Model):
+    
+    extra_parsers = {
+        'company' : Company.parse,
+        'position' : Position.parse
     }
 
     
