@@ -19,7 +19,13 @@ class Model(object):
     @classmethod
     def parse(cls, json):
         """Parse a JSON object into a model instance."""
-        raise NotImplementedError
+        instance = cls()
+        for k, v in json.items():
+            if hasattr(cls, 'extra_values') and k in cls.extra_values:
+                func = cls.extra_parsers[k]
+                setattr(instance, k, func(v))
+            else:
+                setattr(instance, k, v)
     
     @classmethod
     def parse_list(cls, json):
@@ -32,42 +38,23 @@ class Model(object):
     
 class Location(Model):
     
-    @classmethod
-    def parse(cls, json):
-        location = cls()
-        for k, v in json.items():
-            if k == 'country':
-                setattr(location, k, v.get('code'))
-            else:
-                setattr(location, k, v)
-        return location
-
+    extra_parsers = {
+        'country' : lambda v : v.get('code')
+    }
+    
 
 class Company(Model):
+    pass
     
-    @classmethod
-    def parse(cls, json):
-        company = cls()
-        for k, v in json.items():
-            setattr(company, k, v)
-        return company
-            
-    
+        
 class Job(Model):
     
-    @classmethod
-    def parse(cls, json):
-        job = cls()
-        for k, v in json.items():
-            if k == 'company':
-                setattr(job, k, Company.parse(v))
-            elif k == 'position':
-                setattr(job, k, Position.parse(v))
-            else:
-                setattr(job, k, v)
-        return job
-            
-
+    extra_parsers = {
+        'company' : lambda v : Company.parse(v),
+        'position' : lambda v : Position.parse(v)
+    }
+    
+    
 class PositionResultSet(ResultSet):
     
     _cached_current_position = None
@@ -95,19 +82,13 @@ class PositionResultSet(ResultSet):
      
             
 class Position(Model):
-    
-    @classmethod
-    def parse(cls, json):
-        position = cls()
-        for k, v in json.items():
-            if k == 'company':
-                setattr(position, k, Company.parse(v))
-            elif k in ['startDate', 'endDate']:
-                setattr(position, k, parse_date(v))
-            else:
-                setattr(position, k, v)
-        return position
 
+    extra_parsers = {
+        'company' : lambda v : Company.parse(v),
+        'startDate' : lambda v : parse_date(v),
+        'endDate' : lambda v : parse_date(v),
+    }
+        
     @classmethod
     def parse_list(cls, json):
         results = PositionResultSet()
@@ -119,124 +100,62 @@ class Position(Model):
 
 class Education(Model):
     
-    @classmethod
-    def parse(cls, json):
-        education = cls()
-        for k, v in json.items():
-            if k in ['startDate', 'endDate']:
-                setattr(education, k, parse_date(v))
-            else:
-                setattr(education, k, v)
-        return education
-
+    extra_parsers = {
+        'startDate' : lambda v : parse_date(v),
+        'endDate' : lambda v : parse_date(v),
+    }
+    
 
 class Skill(Model):
-    
-    @classmethod
-    def parse(cls, json):
-        skill = cls()
-        for k, v in json.items():
-            if k == 'skill':
-                setattr(skill, 'name', v.get('name'))
-            else:
-                setattr(skill, k, v)
-        return skill
+
+    extra_parsers = {
+        'skill' : lambda v : v.get('name'),
+    }
     
     
 class PhoneNumber(Model):
+    pass
     
-    @classmethod
-    def parse(cls, json):
-        phone_number = cls()
-        for k, v in json.items():
-            setattr(phone_number, k, v)
-        return phone_number
-        
         
 class Language(Model):
     
-    @classmethod
-    def parse(cls, json):
-        language = cls()
-        for k, v in json.items():
-            if k == 'language':
-                setattr(language, 'name', v.get('name', ''))
-            else:
-                setattr(language, k, v)  
-        return language
-    
-    
+    extra_parsers = {
+        'language' : lambda v : v.get('name'),
+    }
+
+  
 class RecommendationType(Model):
-    
-    @classmethod
-    def parse(cls, json):
-        recommendation_type = cls()
-        for k, v in json.items():
-            setattr(recommendation_type, k, v)
-        return recommendation_type    
+    pass
 
     
-class Recommender(Model):    
+class Recommender(Model):
+    pass    
 
-    @classmethod
-    def parse(cls, json):
-        recommender = cls()
-        for k, v in json.items():
-            setattr(recommender, k, v)
-        return recommender   
              
-    
 class Recommendation(Model):
     
-    @classmethod
-    def parse(cls, json):
-        recommendation = cls()
-        for k, v in json.items():
-            if k == 'recommendationType':
-                setattr(recommendation, k, RecommendationType.parse(v))
-            elif k == 'recommender':  
-                setattr(recommendation, k, Recommender.parse(v))
-            else:
-                setattr(recommendation, k, v)
-        return recommendation
-                
+    extra_parsers = {
+        'recommendationType' : lambda v : RecommendationType.parse(v),
+        'recommender' : lambda v : Recommender.parse(v),
+    }
 
 class Person(Model):
     
-    @classmethod
-    def parse(cls, json):
-        person = cls()
-        for k, v in json.items():
-            if k == 'positions':
-                setattr(person, k, Position.parse_list(v))
-            elif k == 'educations':
-                setattr(person, k, Education.parse_list(v))
-            elif k == 'skills':
-                setattr(person, k, v)
-            elif k == 'phoneNumbers':
-                setattr(person, k, PhoneNumber.parse_list(v))
-            elif k == 'languages':
-                setattr(person, k, Language.parse_list(v))
-            elif k == 'location':
-                setattr(person, k, Location.parse(v))
-            elif k == 'recommendationsReceived':
-                setattr(person, k, Recommendation.parse_list(v))
-            else:
-                setattr(person, k, v)
-        return person
+    extra_parsers = {
+        'positions' : lambda v : Position.parse_list(v),
+        'educations' : lambda v : Education.parse_list(v),
+        'skills' : lambda v : Skill.parse_list(v),
+        'phoneNumbers' : lambda v : PhoneNumber.parse_list(v),
+        'languages' : lambda v : Language.parse_list(v),
+        'location' : lambda v : Location.parse(v),
+        'recommendationsReceived' : lambda v : Recommendation.parse_list(v),
+    }
+
     
 class Application(Model):
     
-    @classmethod
-    def parse(cls, json):
-        application = cls()
-        for k, v in json.items():
-            if k == 'meta':
-                setattr(application, k, parse_meta(v))
-            elif k == 'job':
-                setattr(application, k, Job.parse(v))
-            elif k == 'person':
-                setattr(application, k, Person.parse(v))
-            else:
-                setattr(application, k, v)
-        return application
+    extra_parsers = {
+        'meta' : lambda v : parse_meta(v),
+        'job' : lambda v : Job.parse(v),
+        'person' : lambda v : Person.parse(v)
+    }
